@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -28,6 +29,12 @@ public class ServerResource {
 
     @GetMapping("/list")
     public ResponseEntity<Response> getServers() {
+        try {
+            TimeUnit.SECONDS.sleep(4);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return ResponseEntity.ok(Response.builder()
                 .timeStamp(now()).data(Map.of("servers", serverServiceImplementation.list(30)))
                 .message("server extracted")
@@ -77,10 +84,12 @@ public class ServerResource {
                 .build());
     }
 
+    //http://localhost:8080/server/image2.png
+
     @GetMapping(path = "/image/{fileName}", produces = IMAGE_PNG_VALUE)
     public byte[] getServerImage(@PathVariable("fileName") String fileName) {
         try {
-            return Files.readAllBytes(Paths.get(System.getProperty("H:\\SOURCE\\server manager\\server_manager\\src\\main\\resources\\images\\" + fileName)));
+            return Files.readAllBytes(Paths.get(System.getProperty("user.home") + "/Downloads/images/" + fileName));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
